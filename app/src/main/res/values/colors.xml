@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="cherry">#775360</color>
+    <color name="sea">#4C637A</color>
+    <color name="raspberry">#8080A3</color>
+    <color name="light_purple">#BCBDDD</color>
+    <color name="milktea">#D9C6A9</color>
+    <color name="light_green">#CDD4B7</color>
+    <color name="coffee">#A38A63</color>
+    <color name="rose">#D3948A</color>
+    <color name="vintage_brown">#76665D</color>
+    <color name="ripple_effect_color">#f816a463</color>
+    <color name="light_blue">#D1E7FE</color>
+</resources>

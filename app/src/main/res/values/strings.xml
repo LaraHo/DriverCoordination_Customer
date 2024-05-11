@@ -1,0 +1,19 @@
+<!--包含用到的文本（按钮、标签）-->
+<resources>
+    <string name="app_name">DriverCoordination for Customer</string>
+    <string name="title_activity_driver_home">DriverHome</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_sign_out">Sign Out</string>
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_change_password">Change PassWord</string>
+    <string name="menu_nav_delete_account">Delete Account</string>
+    <string name="title_activity_customer_home2">CustomerHome2Activity</string>
+</resources>
