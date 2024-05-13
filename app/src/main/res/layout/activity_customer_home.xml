@@ -1,58 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CustomerHomeActivity"
-    android:orientation="vertical"
-    android:gravity="center">
+    android:fitsSystemWindows="true"
+    tools:openDrawer="start">
 
-    <TextView
+    <include
+        android:id="@+id/app_bar_customer_home"
+        layout="@layout/app_bar_customer_home"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="Start your trip now!"
-        android:textSize="25sp"/>
+        android:layout_height="match_parent" />
 
-    <EditText
-        android:id="@+id/pickuppoint"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="pick-up point" />
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="drop-off point"
-        android:id="@+id/dropoffpoint"/>
-
-    <RadioGroup
-        android:id="@+id/radioGroup"
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <RadioButton
-            android:id="@+id/btnMan"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="personal transport"
-            android:checked="true"/>
-
-        <RadioButton
-            android:id="@+id/btnWoman"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="package delivery"/>
-    </RadioGroup>
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="confirm"
-        android:id="@+id/confirm"
-        android:layout_marginTop="50dp"/>
-
-</LinearLayout>
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/nav_header_customer_home"
+        app:menu="@menu/activity_main_drawer" />
+</androidx.drawerlayout.widget.DrawerLayout>

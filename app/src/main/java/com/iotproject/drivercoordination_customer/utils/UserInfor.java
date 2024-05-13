@@ -9,7 +9,7 @@ public class UserInfor {
         if (userName != null){
             return userName;
         }else{
-            return "NULL";
+            return "IoTBestProject";
         }
 
     }
@@ -22,7 +22,7 @@ public class UserInfor {
         if (userEmail != null){
             return userEmail;
         }else{
-            return "NULL";
+            return "IoTProject@bdic.com";
         }
 
     }
@@ -33,9 +33,9 @@ public class UserInfor {
 
     public static String bulidWelcomeMessage(){
         if(userName != null){
-            return new StringBuilder("Welcome Driver ").append(userName).toString();
+            return new StringBuilder("Welcome ").append(userName).toString();
         }else{
-            return "Welcome Driver!";
+            return "Welcome!";
         }
     }
 }
