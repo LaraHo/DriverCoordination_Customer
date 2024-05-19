@@ -9,7 +9,7 @@ import okhttp3.RequestBody;
  */
 public class HttpPostRequest {
     private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-
+    public static final String url = "http://172.20.10.3:8080";
     public static void okhttpPost(String url, RequestBody requestBody, okhttp3.Callback callback) {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()

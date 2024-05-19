@@ -3,7 +3,8 @@ package com.iotproject.drivercoordination_customer.utils;
 public class UserInfor {
     private static String userEmail;
     private static String userName;
-    private static String role; //customer/driver
+
+    private static String userPhone;
 
     public static String getUserName() {
         if (userName != null){
@@ -24,7 +25,6 @@ public class UserInfor {
         }else{
             return "IoTProject@bdic.com";
         }
-
     }
 
     public static void setUserEmail(String email) {
@@ -37,5 +37,22 @@ public class UserInfor {
         }else{
             return "Welcome!";
         }
+    }
+
+    public static String getUserPhone() {
+        if (userPhone != null){
+            return userPhone;
+        }else{
+            return "3530872260272";
+        }
+    }
+
+    public static void setUserPhone(String userPhone) {
+        UserInfor.userPhone = userPhone;
+    }
+    public static void clear() {
+        userEmail = null;
+        userName = null;
+        userPhone = null;
     }
 }

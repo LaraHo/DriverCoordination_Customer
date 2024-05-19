@@ -62,6 +62,13 @@ dependencies {
     implementation("com.wang.avi:library:2.1.3")
     //circle image
     implementation("de.hdodenhof:circleimageview:3.1.0")
+    //sliding up
+    implementation("com.sothree.slidinguppanel:library:3.3.1")
+    implementation ("com.google.code.gson:gson:2.8.6")//
+
+//    implementation ("com.jakewharton:butterknife:10.2.3")
+//    annotationProcessor ("com.jakewharton:butterknife-compiler:10.2.3")
+
 
     implementation(libs.appcompat)
     implementation(libs.material)

@@ -1,10 +1,12 @@
 package com.iotproject.drivercoordination_customer;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Looper;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -23,6 +25,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.iotproject.drivercoordination_customer.utils.HttpPostRequest;
+import com.iotproject.drivercoordination_customer.utils.ReadJson;
 import com.iotproject.drivercoordination_customer.utils.UserInfor;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
@@ -36,6 +39,8 @@ public class CustomerLoginActivity extends AppCompatActivity {
     private EditText mEmail, mPassword;
     private Button mLogin, mRegistration,mBack;
     private RelativeLayout lCustomerLoginRoot;
+    private String email,password,passwordConfirm ,name,phone;
+    private static final String TAG = "连接后端测试：";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,42 +75,70 @@ public class CustomerLoginActivity extends AppCompatActivity {
         mLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 //测试用！直接跳转！！
                 Intent intent = new Intent(CustomerLoginActivity.this, CustomerHomeActivity.class);
                 startActivity(intent);
                 finish();
 
-
-                String url = "http://172.20.10.3:8080/addUser"; //邮箱+密码；String
                 final String email = mEmail.getText().toString();
                 final String password = mPassword.getText().toString();
+                //check empty input
+                if(TextUtils.isEmpty(email)){
+                    Snackbar.make(lCustomerLoginRoot,"please enter your email address",Snackbar.LENGTH_SHORT).show();
+                    return;
+                }
+                if(TextUtils.isEmpty(password)){
+                    Snackbar.make(lCustomerLoginRoot,"please enter password",Snackbar.LENGTH_SHORT).show();
+                    return;
+                }
 
+                ProgressDialog progressDialog = new ProgressDialog(CustomerLoginActivity.this);
+                progressDialog.setMessage("Logging...");
+                progressDialog.setCancelable(false);
+                progressDialog.show();
+
+                String url = HttpPostRequest.url+"/User/Login"; //邮箱+密码；String
                 RequestBody requestBody = new FormBody.Builder().
                         add("email", email).
-                        add("password", password).build();
+                        add("password", password)
+                        .build();
 
                 HttpPostRequest.okhttpPost(url, requestBody, new okhttp3.Callback() {
-                    //！！！后端返回未测试
                     @Override
                     public void onFailure(@NonNull okhttp3.Call call, @NonNull IOException e) {
+                        progressDialog.dismiss();
                         Snackbar.make(lCustomerLoginRoot,"post fail: "+e.getMessage(),Snackbar.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onResponse(@NonNull okhttp3.Call call, @NonNull Response response) throws IOException {
-                        if (response.code()==200) {
-                            UserInfor.setUserEmail(email);
-                            Snackbar.make(lCustomerLoginRoot, "success: " + email, Snackbar.LENGTH_SHORT).show();
-                            Intent intent = new Intent(CustomerLoginActivity.this, CustomerHomeActivity.class);
-                            startActivity(intent);
-                            finish();
-                        }else if(response.code()==404){
-                            Snackbar.make(lCustomerLoginRoot, "fail: the email does not exist", Snackbar.LENGTH_SHORT).show();
-                        }else if(response.code()==401){
-                            Snackbar.make(lCustomerLoginRoot, "password error", Snackbar.LENGTH_SHORT).show();
-                        }else{
-                            Snackbar.make(lCustomerLoginRoot, "error", Snackbar.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
+                        ReadJson jsonHere = new ReadJson(response.body().string());
+                        int codeCheck  = jsonHere.Code();
+                        if (codeCheck==200) {
+                            String name = jsonHere.ReadString("userName");
+                            String phone = jsonHere.ReadString("phone");
+                            runOnUiThread(() -> {
+                                UserInfor.setUserName(name);
+                                UserInfor.setUserEmail(email);
+                                UserInfor.setUserPhone(phone);
+                                Snackbar.make(lCustomerLoginRoot, "success: " + name, Snackbar.LENGTH_SHORT).show();
+                                Intent intent = new Intent(CustomerLoginActivity.this, CustomerHomeActivity.class);
+                                startActivity(intent);
+                                finish();
+                            });
+                        } else {
+                            switch (codeCheck) {
+                                case 404:
+                                    Snackbar.make(lCustomerLoginRoot, "fail: the account does not exist! ", Snackbar.LENGTH_SHORT).show();
+                                    break;
+                                case 401:
+                                    Snackbar.make(lCustomerLoginRoot, "fail: password error! ", Snackbar.LENGTH_SHORT).show();
+                                    break;
+                                default:
+                                    Snackbar.make(lCustomerLoginRoot, "Error Unknown! ", Snackbar.LENGTH_SHORT).show();
+                                    break;
+                            }
                         }
                     }
 
@@ -133,10 +166,15 @@ public class CustomerLoginActivity extends AppCompatActivity {
         View registration_layout = inflater.inflate(R.layout.layout_customer_registration,null);
 
         MaterialEditText regEmail = registration_layout.findViewById(R.id.email);
+        regEmail.setText(email);
         MaterialEditText regName= registration_layout.findViewById(R.id.name);
+        regName.setText(name);
         MaterialEditText regPhone = registration_layout.findViewById(R.id.phone);
+        regPhone.setText(phone);
         MaterialEditText regPassword = registration_layout.findViewById(R.id.password);
+        regPassword.setText(password);
         MaterialEditText regPasswordConfirm = registration_layout.findViewById(R.id.passwordConfirm);
+        regPasswordConfirm.setText(passwordConfirm);
 
         ScrollView scrollView = new ScrollView(this);
         scrollView.addView(registration_layout);
@@ -148,59 +186,65 @@ public class CustomerLoginActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 //                dialog.dismiss();
-                final String email = regEmail.getText().toString();
-                final String password = regPassword.getText().toString();
-                final String passwordConfirm = regPasswordConfirm.getText().toString();
-                final String name = regName.getText().toString();
-                final String phone = regPhone.getText().toString();
-                final long phoneNumber;
-                // 将字符串表示的电话号码转换为长整型
-                try {
-                    phoneNumber = Long.parseLong(phone);
-                    // 在此处使用 phoneNumber
-                } catch (NumberFormatException e) {
-                    e.printStackTrace();
-                    Snackbar.make(lCustomerLoginRoot,"please check your phone number, is not valid",Snackbar.LENGTH_SHORT).show();
-                    return;
-                }
+                email = regEmail.getText().toString();
+                password = regPassword.getText().toString();
+                passwordConfirm = regPasswordConfirm.getText().toString();
+                name = regName.getText().toString();
+                phone = regPhone.getText().toString();
+
                 //check empty input
                 if(TextUtils.isEmpty(email)){
-                    Snackbar.make(lCustomerLoginRoot,"please enter your email address",Snackbar.LENGTH_SHORT).show();
+                    showToastAndReopenDialog("please enter your email address");
                     return;
                 }
                 if(TextUtils.isEmpty(password)){
-                    Snackbar.make(lCustomerLoginRoot,"please enter password",Snackbar.LENGTH_SHORT).show();
+                    showToastAndReopenDialog("please enter password");
                     return;
                 }
                 if(TextUtils.isEmpty(passwordConfirm)){
-                    Snackbar.make(lCustomerLoginRoot,"please enter your password again",Snackbar.LENGTH_SHORT).show();
+                    showToastAndReopenDialog("please enter your password again");
                     return;
                 }
                 if(TextUtils.isEmpty(name)){
-                    Snackbar.make(lCustomerLoginRoot,"please enter your name",Snackbar.LENGTH_SHORT).show();
+                    showToastAndReopenDialog("please enter your name");
                     return;
                 }
                 if(TextUtils.isEmpty(phone)){
-                    Snackbar.make(lCustomerLoginRoot,"please enter your phone number",Snackbar.LENGTH_SHORT).show();
+                    showToastAndReopenDialog("please enter your phone number");
+                    return;
+                }
+                // 将字符串表示的电话号码转换为长整型
+                try {
+                    final long phoneNumber = Long.parseLong(phone);
+                    // 在此处使用 phoneNumber
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                    showToastAndReopenDialog("please check your phone number, is not valid");
                     return;
                 }
                 //check password
                 if(password.length()<6){
-                    Snackbar.make(lCustomerLoginRoot,"please enter a password longer than 6",Snackbar.LENGTH_SHORT).show();
+                    showToastAndReopenDialog("please enter a password longer than 6");
                     return;
                 }
                 if(!password.equals(passwordConfirm)){
-                    Snackbar.make(lCustomerLoginRoot,"Please check your password. The two entries do not match.",Snackbar.LENGTH_SHORT).show();
+                    showToastAndReopenDialog("Please check your password. The two entries do not match.");
                     return;
                 }
 
+
                 //测试用！直接跳转！！！
-                Intent intent = new Intent(CustomerLoginActivity.this, CustomerHomeActivity.class);
-                startActivity(intent);
-                finish();
+//                Intent intent = new Intent(CustomerLoginActivity.this, CustomerHomeActivity.class);
+//                startActivity(intent);
+//                finish();
+
+                ProgressDialog progressDialog = new ProgressDialog(CustomerLoginActivity.this);
+                progressDialog.setMessage("Registering...");
+                progressDialog.setCancelable(false);
+                progressDialog.show();
 
                 //registration, connect to backend
-                String url = "http://172.20.10.3:8080/addUserWithEmail";
+                String url = "http://172.20.10.3:8080/User/Register";
                 RequestBody requestBody = new FormBody.Builder().
                         add("email", email)
                         .add("name",name)
@@ -208,30 +252,32 @@ public class CustomerLoginActivity extends AppCompatActivity {
                         .add("phone",phone).build();
 
                 HttpPostRequest.okhttpPost(url, requestBody, new okhttp3.Callback() {
-                    //!!!!!接收后端的返回值未测试
                     @Override
                     public void onFailure(@NonNull okhttp3.Call call, @NonNull IOException e) {
+                        progressDialog.dismiss();
                         Snackbar.make(lCustomerLoginRoot,"post fail: "+e.getMessage(),Snackbar.LENGTH_SHORT).show();
                         //失败不跳转页面
                     }
 
                     @Override
                     public void onResponse(@NonNull okhttp3.Call call, @NonNull Response response) throws IOException {
-                        if (response.code()==200){
+                        progressDialog.dismiss();
+                        ReadJson jsonHere = new ReadJson(response.body().string());
+                        int codeCheck  = jsonHere.Code();
+                        if (codeCheck==200){
                             UserInfor.setUserEmail(email);
                             UserInfor.setUserName(name);
+                            UserInfor.setUserPhone(phone);
+//                                Log.d(TAG, "为什么"+codeCheck+"信息: "+responseBodyString);
                             Snackbar.make(lCustomerLoginRoot,"success: "+email,Snackbar.LENGTH_SHORT).show();
                             Intent intent = new Intent(CustomerLoginActivity.this, CustomerHomeActivity.class);
                             startActivity(intent);
                             finish();
-                        }else if (response.code()==409){
+                        }else if (codeCheck==409){
                             Snackbar.make(lCustomerLoginRoot,"fail: the account already exist ",Snackbar.LENGTH_SHORT).show();
                         }else{
-                            Snackbar.make(lCustomerLoginRoot,"error! ",Snackbar.LENGTH_SHORT).show();
+                            Snackbar.make(lCustomerLoginRoot,"unknown error! ",Snackbar.LENGTH_SHORT).show();
                         }
-//                        Looper.prepare();
-//                        Toast.makeText(CustomerLoginActivity.this, "success: "+email, Toast.LENGTH_SHORT).show();
-//                        Looper.loop();
                     }
                 });
             }
@@ -243,6 +289,9 @@ public class CustomerLoginActivity extends AppCompatActivity {
         dialog.show();
     }
 
-
+    private void showToastAndReopenDialog(String message) {
+        runOnUiThread(() -> Toast.makeText(CustomerLoginActivity.this, message, Toast.LENGTH_SHORT).show());
+        showRegistrationDialog();
+    }
 
 }

@@ -2,66 +2,95 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.home.HomeFragment"
+    android:id="@+id/HomeMain"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     android:orientation="vertical"
-    android:gravity="center">
+    >
 
-    <TextView
+    <org.osmdroid.views.MapView
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="350dp" />
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="NONE"
-        android:textSize="40sp"
-        android:id="@+id/text_home"/>
+        android:background="@color/white"
+        android:orientation="vertical">
 
-    <TextView
-        android:layout_marginTop="30dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="Start your trip now!"
-        android:textSize="25sp"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/start_your_trip_now"
+            android:textSize="25sp"/>
 
-    <EditText
-        android:id="@+id/pickuppoint"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="pick-up point" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_vertical">
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="drop-off point"
-        android:id="@+id/dropoffpoint"/>
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/baseline_add_24"/>
 
-    <RadioGroup
-        android:id="@+id/radioGroup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+            <EditText
+                android:id="@+id/pickuppoint"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/pick_up_point" />
 
-        <RadioButton
-            android:id="@+id/btnMan"
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/baseline_add_24"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/drop_off_point"
+                android:id="@+id/dropoffpoint"/>
+
+        </LinearLayout>
+
+        <RadioGroup
+            android:id="@+id/radioGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="personal transport"
-            android:checked="true"/>
+            android:orientation="horizontal"
+            android:layout_gravity="center">
 
-        <RadioButton
-            android:id="@+id/btnWoman"
-            android:layout_width="wrap_content"
+            <RadioButton
+                android:id="@+id/btnMan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/personal_transport"
+                android:checked="true"/>
+
+            <RadioButton
+                android:id="@+id/btnWoman"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/package_delivery"/>
+        </RadioGroup>
+        <Button
+            android:layout_width="130dp"
             android:layout_height="wrap_content"
-            android:text="package delivery"/>
-    </RadioGroup>
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="confirm"
-        android:id="@+id/confirm"
-        android:layout_marginTop="50dp"/>
-
+            android:text="confirm"
+            android:id="@+id/confirm"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/btn_signup_in_background"/>
+    </LinearLayout>
 </LinearLayout>
